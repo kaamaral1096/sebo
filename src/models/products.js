@@ -1,6 +1,6 @@
 const { DataTypes, Sequelize } = require("sequelize");
 const sequelize = require('./../database')
-const Products = sequelize.define("Products", {
+const Products = sequelize.define('Products', {
     idProducts: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -9,33 +9,44 @@ const Products = sequelize.define("Products", {
     title: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
-    authors: {
-        type: DataTypes.STRING,
-        allowNull: false,
         unique: true,
     },
-    password: {
+    price: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    RegistrationDate: {
-        type: DataTypes.DATE,
-        allowNull: true,
+    description: {
+        type: DataTypes.STRING,
     },
-    UserTypeId: {
+    edition: {
+        type: DataTypes.STRING,
+    },
+    frequency: {
+        type: DataTypes.STRING,
+    },
+    sellerId: {
+        type: DataTypes.STRING,
+    },
+    isbn: {
+        type: DataTypes.STRING,
+    },
+    categoryId: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    active: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: 1
-    },
-    especialization: {
+    status: {
         type: DataTypes.STRING,
     },
+    idUsers: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    authors: {
+        type: DataTypes.JSON, // Armazenando autores como JSON
+    },
 }, {
-    timestamps: false, // Desativa createdAt e updatedAt
+    timestamps: false,
 });
+
 
 module.exports = Products;
