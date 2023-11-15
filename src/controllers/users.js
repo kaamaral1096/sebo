@@ -6,7 +6,7 @@ async function findAll(_req, res) {
         const responseData = {
             statusCode: 200,
             message: "Lista de usuários recuperada com sucesso.",
-            data: users, // Insira os dados reais aqui
+            data: users,
         };
         res.status(200).json(responseData);
     } catch (error) {
@@ -15,7 +15,7 @@ async function findAll(_req, res) {
         const errorResponse = {
             statusCode: 500,
             message: "Erro interno do servidor.",
-            error: error.message, // Inclua informações de erro úteis aqui
+            error: error.message,
         };
 
         res.status(500).json(errorResponse);
@@ -60,14 +60,13 @@ async function addUser(req, res) {
 
 async function updateUser(req, res) {
     try {
-        console.log(req.params.idUser)
         const updatedUser = await Users.update(
             {
-                name: req.body.nome,
+                name: req.body.name,
             },
             {
                 where: {
-                    idUser: req.params.idUser,
+                    idUsers: req.params.idUsers,
                 },
             }
         );
@@ -107,7 +106,7 @@ async function deleteUser(req, res) {
                 },
                 {
                     where: {
-                        idUser: req.params.idUser,
+                        idUsers: req.params.idUsers,
                     },
                 }
             );
@@ -138,7 +137,7 @@ async function deleteUser(req, res) {
 async function findUser(req, res) {
     try {
 
-        const foundUser = await Users.findByPk(req.params.idUser);
+        const foundUser = await Users.findByPk(req.params.idUsers);
         if (foundUser === null) {
             const errorResponse = {
                 statusCode: 404,
@@ -171,8 +170,6 @@ async function verifyIfAdminLogin(req, res) {
     try {
         const { email, password } = req.body.login;
         const adminUser = await Users.findOne({ where: { email, password, userTypeId: 1 } });
-        console.log("admiuser")
-        console.log(adminUser)
         if (!adminUser) {
             console.log('entrou no if')
             return false

@@ -11,10 +11,10 @@ routes.get("/users", usersController.findAll);
 
 routes.post("/users", usersController.addUser);
 
-routes.put("/users/:idUser", usersController.updateUser);
+routes.put("/users/:idUsers", usersController.updateUser);
 
-routes.delete("/users/:idUser", usersController.deleteUser);
+routes.delete("/users/:idUsers", usersController.deleteUser);
 
-routes.get("/users/:idUser", usersController.findUser);
+routes.get("/users/:idUsers", usersController.findUser);
 
 module.exports = routes;
