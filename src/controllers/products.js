@@ -1,7 +1,9 @@
 const Products = require("../models/products");
 const Categories = require("../models/categories");
 const Users = require('../models/users');
+const { Op } = require('sequelize');
 
+console.log('entrou no modulo')
 async function addProduct(req, res) {
     try {
         const {
@@ -12,7 +14,7 @@ async function addProduct(req, res) {
             frequency,
             sellerId,
             isbn,
-            categoryName, 
+            categoryName,
             status,
             idUsers,
             authors,
@@ -56,9 +58,9 @@ async function addProduct(req, res) {
             frequency,
             sellerId,
             isbn,
-            categoryId: category.idCategory, 
+            categoryId: category.idCategory,
             status,
-            idUsers: user.idUsers, 
+            idUsers: user.idUsers,
             authors,
         });
 
@@ -181,21 +183,37 @@ async function updateProduct(req, res) {
 
 async function getFilteredProducts(req, res) {
     try {
-        const { categoryId, price } = req.query;
+        const { isbn, title, author, category } = req.query;
 
         const condition = {};
 
-        if (categoryId) {
-            condition.categoryId = categoryId;
+        if (isbn) {
+            condition.isbn = isbn;
         }
 
-        if (price) {
-            condition.price = price.trim();
+        if (title) {
+            condition.title = { [Op.like]: `%${title}%` };
+        }
+
+        if (author) {
+            condition.authors = { [Op.like]: `%${author}%` };
+        }
+
+        if (category) {
+            condition.categoryId = category;
         }
 
         const filteredProducts = await Products.findAll({
             where: condition,
         });
+
+        if (filteredProducts.length === 0) {
+            const notFoundResponse = {
+                statusCode: 404,
+                message: 'Nenhum produto encontrado com os critérios fornecidos.',
+            };
+            return res.status(404).json(notFoundResponse);
+        }
 
         const successResponse = {
             statusCode: 200,
@@ -205,7 +223,6 @@ async function getFilteredProducts(req, res) {
 
         res.status(200).json(successResponse);
     } catch (error) {
-        console.error('Erro ao filtrar produtos:', error);
         const errorResponse = {
             statusCode: 500,
             message: 'Erro interno do servidor',
@@ -215,5 +232,4 @@ async function getFilteredProducts(req, res) {
         res.status(500).json(errorResponse);
     }
 }
-
 module.exports = { addProduct, getAllProducts, getProductById, updateProduct, getFilteredProducts };

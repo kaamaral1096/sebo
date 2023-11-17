@@ -16,10 +16,10 @@ routes.delete("/users/:idUsers", usersController.deleteUser);
 routes.get("/users/:idUsers", usersController.findUser);
 
 routes.post("/products", productsController.addProduct);
+routes.get('/products/filters', productsController.getFilteredProducts);
 routes.get("/products", productsController.getAllProducts);
 routes.get("/products/:idProducts", productsController.getProductById);
 routes.put("/products/:idProducts", productsController.updateProduct); // Adicionando a rota para atualizar um produto
-routes.get("/products/filter", productsController.getFilteredProducts);
 
 
 routes.post("/categories", categoriesController.createCategory);

@@ -60,18 +60,22 @@ async function addUser(req, res) {
 
 async function updateUser(req, res) {
     try {
-        const updatedUser = await Users.update(
-            {
-                name: req.body.name,
-            },
-            {
-                where: {
-                    idUsers: req.params.idUsers,
-                },
-            }
-        );
-        if (updatedUser[0] === 1) {
+        const updateFields = {};
+        const allowedFields = ["name", "email", "password", "specialization"];
 
+        allowedFields.forEach(field => {
+            if (req.body[field] !== undefined) {
+                updateFields[field] = req.body[field];
+            }
+        });
+
+        const updatedUser = await Users.update(updateFields, {
+            where: {
+                idUsers: req.params.idUsers,
+            },
+        });
+
+        if (updatedUser[0] === 1) {
             const responseData = {
                 statusCode: 200,
                 message: 'Usuário atualizado com sucesso',
@@ -99,37 +103,57 @@ async function updateUser(req, res) {
 async function deleteUser(req, res) {
     try {
         const isAdmin = await verifyIfAdminLogin(req, res);
+
         if (isAdmin) {
-            await Users.update(
-                {
-                    active: 0,
-                },
-                {
-                    where: {
-                        idUsers: req.params.idUsers,
-                    },
+            const userToDelete = await Users.findByPk(req.params.idUsers);
+
+            if (userToDelete) {
+                if (userToDelete.userTypeId === 1) {
+                    const responseData = {
+                        statusCode: 403,
+                        message: 'Não é permitido excluir um superadmin.',
+                    };
+                    return res.status(403).json(responseData);
                 }
-            );
-            const responseData = {
-                statusCode: 200,
-                message: 'Usuário desativado com sucesso'
-            };
-            res.status(200).json(responseData);
+
+                await Users.update(
+                    {
+                        active: 0,
+                    },
+                    {
+                        where: {
+                            idUsers: req.params.idUsers,
+                        },
+                    }
+                );
+
+                const responseData = {
+                    statusCode: 200,
+                    message: 'Usuário desativado com sucesso.',
+                };
+                res.status(200).json(responseData);
+            } else {
+                const errorResponse = {
+                    statusCode: 404,
+                    message: 'Usuário não encontrado.',
+                };
+                res.status(404).json(errorResponse);
+            }
         } else {
             const responseData = {
                 statusCode: 403,
-                message: 'Usuário não tem permissão para desativar outros'
+                message: 'Usuário não tem permissão para desativar outros.',
             };
-            res.status(200).json(responseData);
+            res.status(403).json(responseData);
         }
-
     } catch (error) {
         console.error('Erro ao desativar usuário:', error);
+
         const errorResponse = {
             statusCode: 500,
-            message: 'Erro interno do servidor',
+            message: 'Erro interno do servidor.',
             error: error.message,
-        };
+        }
         res.status(500).json(errorResponse);
     }
 }
