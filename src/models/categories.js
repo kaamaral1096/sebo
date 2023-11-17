@@ -19,6 +19,7 @@ const Categories = sequelize.define("Categories", {
   active: {
     type: DataTypes.STRING,
     allowNull: false,
+    defaultValue: 1
   },
 
 }, {

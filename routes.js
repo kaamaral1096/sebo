@@ -25,6 +25,6 @@ routes.put("/products/:idProducts", productsController.updateProduct); // Adicio
 routes.post("/categories", categoriesController.createCategory);
 routes.get("/categories", categoriesController.listCategories);
 routes.put("/categories/:idCategory", categoriesController.editCategory);
-
+routes.delete("/categories/:idCategory", categoriesController.deleteCategory)
 
 module.exports = routes;
