@@ -2,7 +2,7 @@ const express = require("express");
 const usersController = require("./src/controllers/users");
 const productsController = require("./src/controllers/products");
 const categoriesController = require("./src/controllers/categories");
-
+const transactionsController = require('./src/controllers/transactions')
 const routes = express.Router();
 
 routes.get('/', (req, res) => {
@@ -26,5 +26,10 @@ routes.post("/categories", categoriesController.createCategory);
 routes.get("/categories", categoriesController.listCategories);
 routes.put("/categories/:idCategory", categoriesController.editCategory);
 routes.delete("/categories/:idCategory", categoriesController.deleteCategory)
+
+
+
+routes.post("/transactions", transactionsController.transactions);
+routes.get("/transactions/:transactionId", transactionsController.getTransactionDetails);
 
 module.exports = routes;
